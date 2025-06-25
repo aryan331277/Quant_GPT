@@ -15,11 +15,11 @@ def chunk_text(text,max_tokens=300,overlap=50):
         sentence_tokens = len(sentence.split())#counts number of tokens in sentence by splitting on white space
         if tokens+sentence_tokens>max_tokens:#if adding the sentence would be more than 300 finalise the current chunk and save it
             chunks.append(" ".join(chunk))
-            if current_chunk:
-              num_sentences_to_keep=overlap//len(current_chunk)#adding overlap becaause we are repeating the last part of the chunk in new chunk so model remembers
-              current_chunk = current_chunk[-num_sentences_to_keep:] #list slicing from end
+            if chunk:
+                num_sentences_to_keep = max(1, overlap // len(chunk))  # avoid div by zero
+                chunk = chunk[-num_sentences_to_keep:]
             else:
-              current_chunk=[]
+              chunk=[]
             tokens = sum(len(s.split()) for s in chunk)#recalculates how many words are there in the current chunk after overlap is complete
         chunk.append(sentence)#adding current sentence to chunk
         tokens=tokens+sentence_tokens
